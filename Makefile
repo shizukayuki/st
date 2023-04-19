@@ -24,7 +24,7 @@ st: $(OBJ)
 	$(CC) -o $@ $(OBJ) $(STLDFLAGS)
 
 clean:
-	rm -f st $(OBJ) st-$(VERSION).tar.gz
+	rm -f st $(OBJ) st-$(VERSION).tar.gz config.h
 
 dist: clean
 	mkdir -p st-$(VERSION)
@@ -49,3 +49,12 @@ uninstall:
 	rm -f $(DESTDIR)$(MANPREFIX)/man1/st.1
 
 .PHONY: all clean dist install uninstall
+
+quilt-refresh:
+	quilt pop -a > /dev/null || test "$$?" -eq 2
+	QUILT_NO_DIFF_INDEX=1 quilt push --refresh -a
+
+quilt-install: clean quilt-refresh
+	$(MAKE) install
+
+.PHONY: quilt-refresh quilt-install
