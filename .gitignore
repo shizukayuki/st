@@ -1,6 +1,11 @@
 *.o
+config.h
 st
 
 # clangd
 .cache/
 compile_commands.json
+
+# quilt
+*~
+.pc/
