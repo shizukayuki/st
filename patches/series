@@ -1,3 +1,5 @@
 solarized-dark.patch
 boxdraw.patch
+scrollback.patch
+scrollback-reflow.patch
 config.patch
