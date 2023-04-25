@@ -2,4 +2,5 @@ solarized-dark.patch
 boxdraw.patch
 scrollback.patch
 scrollback-reflow.patch
+alpha-background.patch
 config.patch
