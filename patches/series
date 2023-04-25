@@ -3,4 +3,5 @@ boxdraw.patch
 scrollback.patch
 scrollback-reflow.patch
 alpha-background.patch
+dynamic-cursor-color.patch
 config.patch
