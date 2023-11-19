@@ -309,7 +309,7 @@
  		} else {
  			tmoveto(term.c.x, term.c.y-1);
  		}
-@@ -2538,7 +2604,7 @@ twrite(const char *buf, int buflen, int
+@@ -2544,7 +2610,7 @@ twrite(const char *buf, int buflen, int
  void
  tresize(int col, int row)
  {
@@ -318,7 +318,7 @@
  	int minrow = MIN(row, term.row);
  	int mincol = MIN(col, term.col);
  	int *bp;
-@@ -2575,6 +2641,14 @@ tresize(int col, int row)
+@@ -2581,6 +2647,14 @@ tresize(int col, int row)
  	term.dirty = xrealloc(term.dirty, row * sizeof(*term.dirty));
  	term.tabs = xrealloc(term.tabs, col * sizeof(*term.tabs));
  
@@ -333,7 +333,7 @@
  	/* resize each row to new width, zero-pad if needed */
  	for (i = 0; i < minrow; i++) {
  		term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
-@@ -2633,7 +2707,7 @@ drawregion(int x1, int y1, int x2, int y
+@@ -2639,7 +2713,7 @@ drawregion(int x1, int y1, int x2, int y
  			continue;
  
  		term.dirty[y] = 0;
@@ -342,7 +342,7 @@
  	}
  }
  
-@@ -2654,8 +2728,9 @@ draw(void)
+@@ -2660,8 +2734,9 @@ draw(void)
  		cx--;
  
  	drawregion(0, 0, term.col, term.row);

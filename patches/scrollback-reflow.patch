@@ -663,7 +663,7 @@
 -selscroll(int orig, int n)
 +selmove(int n)
  {
--	if (sel.ob.x == -1)
+-	if (sel.ob.x == -1 || sel.alt != IS_SET(MODE_ALTSCREEN))
 -		return;
 +	sel.ob.y += n, sel.nb.y += n;
 +	sel.oe.y += n, sel.ne.y += n;
@@ -1016,7 +1016,7 @@
  		} else {
  			tmoveto(term.c.x, term.c.y-1);
  		}
-@@ -2530,7 +2685,8 @@ check_control_code:
+@@ -2531,7 +2686,8 @@ check_control_code:
  		 */
  		return;
  	}
@@ -1026,7 +1026,7 @@
  		selclear();
  
  	gp = &term.line[term.c.y][term.c.x];
-@@ -2565,6 +2721,7 @@ check_control_code:
+@@ -2571,6 +2727,7 @@ check_control_code:
  	if (term.c.x+width < term.col) {
  		tmoveto(term.c.x+width, term.c.y);
  	} else {
@@ -1034,7 +1034,7 @@
  		term.c.state |= CURSOR_WRAPNEXT;
  	}
  }
-@@ -2602,93 +2759,274 @@ twrite(const char *buf, int buflen, int
+@@ -2608,93 +2765,274 @@ twrite(const char *buf, int buflen, int
  }
  
  void
@@ -1372,7 +1372,7 @@
  }
  
  void
-@@ -2728,9 +3066,8 @@ draw(void)
+@@ -2734,9 +3072,8 @@ draw(void)
  		cx--;
  
  	drawregion(0, 0, term.col, term.row);
