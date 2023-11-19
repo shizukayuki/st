@@ -7,13 +7,7 @@ include config.mk
 SRC = st.c x.c
 OBJ = $(SRC:.c=.o)
 
-all: options st
-
-options:
-	@echo st build options:
-	@echo "CFLAGS  = $(STCFLAGS)"
-	@echo "LDFLAGS = $(STLDFLAGS)"
-	@echo "CC      = $(CC)"
+all: st
 
 config.h:
 	cp config.def.h config.h
@@ -61,4 +55,4 @@ quilt-refresh:
 quilt-install: clean quilt-refresh
 	$(MAKE) install
 
-.PHONY: all options clean dist install uninstall quilt-refresh quilt-install
+.PHONY: all clean dist install uninstall quilt-refresh quilt-install
