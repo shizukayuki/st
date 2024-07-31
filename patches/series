@@ -4,4 +4,5 @@ scrollback.patch
 scrollback-reflow.patch
 alpha-background.patch
 dynamic-cursor-color.patch
+sparefont.patch
 config.patch

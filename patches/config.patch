@@ -1,6 +1,6 @@
 --- st.orig/config.def.h
 +++ st/config.def.h
-@@ -73,7 +73,7 @@ static unsigned int cursorthickness = 2;
+@@ -75,7 +75,7 @@ static unsigned int cursorthickness = 2;
   *    Bold affects lines thickness if boxdraw_bold is not 0. Italic is ignored.
   * 0: disable (render all U25XX glyphs normally from the font).
   */
@@ -9,7 +9,7 @@
  const int boxdraw_bold = 0;
  
  /* braille (U28XX):  1: render as adjacent "pixels",  0: use font */
-@@ -106,7 +106,7 @@ char *termname = "st-256color";
+@@ -108,7 +108,7 @@ char *termname = "st-256color";
  unsigned int tabspaces = 8;
  
  /* bg opacity */
@@ -18,7 +18,7 @@
  
  /* Terminal colors (16 first used in escape sequence) */
  static const char *colorname[] = {
-@@ -189,16 +189,16 @@ static uint forcemousemod = ShiftMask;
+@@ -191,16 +191,16 @@ static uint forcemousemod = ShiftMask;
   * Internal mouse shortcuts.
   * Beware that overloading Button1 will disable the selection.
   */
