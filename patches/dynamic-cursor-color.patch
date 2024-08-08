@@ -1,14 +1,14 @@
 --- st.orig/x.c
 +++ st/x.c
-@@ -1590,6 +1590,7 @@ void
- xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
+@@ -1584,6 +1584,7 @@ void
+ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og, Line line, int len)
  {
  	Color drawcol;
 +	XRenderColor colbg;
  
  	/* remove the old cursor */
  	if (selected(ox, oy))
-@@ -1618,11 +1619,21 @@ xdrawcursor(int cx, int cy, Glyph g, int
+@@ -1614,11 +1615,21 @@ xdrawcursor(int cx, int cy, Glyph g, int
  		if (selected(cx, cy)) {
  			g.fg = defaultfg;
  			g.bg = defaultrcs;

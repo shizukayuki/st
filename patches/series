@@ -2,6 +2,7 @@ solarized-dark.patch
 boxdraw.patch
 scrollback.patch
 scrollback-reflow.patch
+wide-glyph.patch
 alpha-background.patch
 dynamic-cursor-color.patch
 sparefont.patch

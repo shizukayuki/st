@@ -199,7 +199,7 @@
  	}
  
  	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)
-@@ -2057,6 +2114,10 @@ main(int argc, char *argv[])
+@@ -2060,6 +2117,10 @@ main(int argc, char *argv[])
  	case 'a':
  		allowaltscreen = 0;
  		break;
