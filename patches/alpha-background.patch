@@ -10,9 +10,27 @@
  /* Terminal colors (16 first used in escape sequence) */
  static const char *colorname[] = {
  	/* 8 normal colors */
+@@ -208,6 +211,9 @@ static Shortcut shortcuts[] = {
+ 	{ ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
+ 	{ ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
+ 	{ XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
++	{ TERMMOD,              XK_braceright,  incalpha,       {.f = +.05} },
++	{ TERMMOD,              XK_braceleft,   incalpha,       {.f = -.05} },
++	{ TERMMOD,              XK_quotedbl,    incalpha,       {.f =  0} },
+ 	{ TERMMOD,              XK_Prior,       zoom,           {.f = +1} },
+ 	{ TERMMOD,              XK_Next,        zoom,           {.f = -1} },
+ 	{ TERMMOD,              XK_Home,        zoomreset,      {.f =  0} },
 --- st.orig/x.c
 +++ st/x.c
-@@ -106,6 +106,7 @@ typedef struct {
+@@ -56,6 +56,7 @@ static void clipcopy(const Arg *);
+ static void clippaste(const Arg *);
+ static void numlock(const Arg *);
+ static void selpaste(const Arg *);
++static void incalpha(const Arg *);
+ static void zoom(const Arg *);
+ static void zoomabs(const Arg *);
+ static void zoomreset(const Arg *);
+@@ -106,6 +107,7 @@ typedef struct {
  	XSetWindowAttributes attrs;
  	int scr;
  	int isfixed; /* is fixed geometry? */
@@ -20,7 +38,37 @@
  	int l, t; /* left and top offset */
  	int gm; /* geometry mask */
  } XWindow;
-@@ -754,7 +755,7 @@ xresize(int col, int row)
+@@ -243,6 +245,7 @@ static int frccap = 0;
+ static char *usedfont = NULL;
+ static double usedfontsize = 0;
+ static double defaultfontsize = 0;
++static float defaultalpha = 0;
+ 
+ static char *opt_class = NULL;
+ static char **opt_cmd  = NULL;
+@@ -294,6 +297,21 @@ numlock(const Arg *dummy)
+ }
+ 
+ void
++incalpha(const Arg *arg)
++{
++	if (arg->f)
++		alpha += arg->f;
++	else
++		alpha = defaultalpha;
++	LIMIT(alpha, 0.0, 1.0);
++
++	dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * alpha);
++	dc.col[defaultbg].pixel &= 0x00FFFFFF;
++	dc.col[defaultbg].pixel |= (unsigned char)(0xff * alpha) << 24;
++	redraw();
++}
++
++void
+ zoom(const Arg *arg)
+ {
+ 	Arg larg;
+@@ -754,7 +772,7 @@ xresize(int col, int row)
  
  	XFreePixmap(xw.dpy, xw.buf);
  	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h,
@@ -29,7 +77,7 @@
  	XftDrawChange(xw.draw, xw.buf);
  	xclear(0, 0, win.w, win.h);
  
-@@ -814,6 +815,10 @@ xloadcols(void)
+@@ -814,6 +832,10 @@ xloadcols(void)
  			else
  				die("could not allocate color %d\n", i);
  		}
@@ -40,7 +88,7 @@
  	loaded = 1;
  }
  
-@@ -844,6 +849,12 @@ xsetcolorname(int x, const char *name)
+@@ -844,6 +866,12 @@ xsetcolorname(int x, const char *name)
  	XftColorFree(xw.dpy, xw.vis, xw.cmap, &dc.col[x]);
  	dc.col[x] = ncolor;
  
@@ -53,7 +101,7 @@
  	return 0;
  }
  
-@@ -1136,11 +1147,23 @@ xinit(int cols, int rows)
+@@ -1136,11 +1164,23 @@ xinit(int cols, int rows)
  	Window parent;
  	pid_t thispid = getpid();
  	XColor xmousefg, xmousebg;
@@ -78,16 +126,17 @@
  
  	/* font */
  	if (!FcInit())
-@@ -1150,7 +1173,7 @@ xinit(int cols, int rows)
+@@ -1150,7 +1190,8 @@ xinit(int cols, int rows)
  	xloadfonts(usedfont, 0);
  
  	/* colors */
 -	xw.cmap = XDefaultColormap(xw.dpy, xw.scr);
 +	xw.cmap = XCreateColormap(xw.dpy, parent, xw.vis, None);
++	defaultalpha = alpha;
  	xloadcols();
  
  	/* adjust fixed window geometry */
-@@ -1170,19 +1193,15 @@ xinit(int cols, int rows)
+@@ -1170,19 +1211,15 @@ xinit(int cols, int rows)
  		| ButtonMotionMask | ButtonPressMask | ButtonReleaseMask;
  	xw.attrs.colormap = xw.cmap;
  
@@ -110,7 +159,47 @@
  	XSetForeground(xw.dpy, dc.gc, dc.col[defaultbg].pixel);
  	XFillRectangle(xw.dpy, xw.buf, dc.gc, 0, 0, win.w, win.h);
  
-@@ -2057,6 +2076,10 @@ main(int argc, char *argv[])
+@@ -1386,7 +1423,7 @@ xdrawglyphfontspecs(const XftGlyphFontSp
+ 	int charlen = len * ((base.mode & ATTR_WIDE) ? 2 : 1);
+ 	int winx = borderpx + x * win.cw, winy = borderpx + y * win.ch,
+ 	    width = charlen * win.cw;
+-	Color *fg, *bg, *temp, revfg, revbg, truefg, truebg;
++	Color *fg, *bg, *temp, tempfg, tempbg, revfg, revbg, truefg, truebg;
+ 	XRenderColor colfg, colbg;
+ 	XRectangle r;
+ 
+@@ -1460,10 +1497,30 @@ xdrawglyphfontspecs(const XftGlyphFontSp
+ 		fg = &revfg;
+ 	}
+ 
++	tempbg = *bg;
++	tempfg = *fg;
++	bg = &tempbg;
++	fg = &tempfg;
++
++	if (bg->color.red == dc.col[defaultbg].color.red &&
++		bg->color.green == dc.col[defaultbg].color.green &&
++		bg->color.blue == dc.col[defaultbg].color.blue) {
++		bg->color.alpha = dc.col[defaultbg].color.alpha;
++		bg->pixel &= 0x00FFFFFF;
++		bg->pixel |= dc.col[defaultbg].pixel & (0xff << 24);
++	}
++
+ 	if (base.mode & ATTR_REVERSE) {
+ 		temp = fg;
+ 		fg = bg;
+ 		bg = temp;
++
++		bg->color.alpha = fg->color.alpha;
++		bg->pixel &= 0x00FFFFFF;
++		bg->pixel |= fg->pixel & (0xff << 24);
++
++		fg->color.alpha = 0xffff;
++		fg->pixel |= 0xff << 24;
+ 	}
+ 
+ 	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)
+@@ -2057,6 +2114,10 @@ main(int argc, char *argv[])
  	case 'a':
  		allowaltscreen = 0;
  		break;

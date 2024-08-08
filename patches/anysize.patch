@@ -1,6 +1,6 @@
 --- st.orig/x.c
 +++ st/x.c
-@@ -885,8 +885,8 @@ xhints(void)
+@@ -902,8 +902,8 @@ xhints(void)
  	sizeh->flags = PSize | PResizeInc | PBaseSize | PMinSize;
  	sizeh->height = win.h;
  	sizeh->width = win.w;

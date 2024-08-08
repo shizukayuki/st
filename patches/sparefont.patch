@@ -11,7 +11,7 @@
  /*
 --- st.orig/x.c
 +++ st/x.c
-@@ -159,6 +159,8 @@ static void xhints(void);
+@@ -160,6 +160,8 @@ static void xhints(void);
  static int xloadcolor(int, const char *, Color *);
  static int xloadfont(Font *, FcPattern *);
  static void xloadfonts(const char *, double);
@@ -20,7 +20,7 @@
  static void xunloadfont(Font *);
  static void xunloadfonts(void);
  static void xsetenv(void);
-@@ -308,6 +310,7 @@ zoomabs(const Arg *arg)
+@@ -325,6 +327,7 @@ zoomabs(const Arg *arg)
  {
  	xunloadfonts();
  	xloadfonts(usedfont, arg->f);
@@ -28,7 +28,7 @@
  	cresize(0, 0);
  	redraw();
  	xhints();
-@@ -1063,6 +1066,93 @@ xloadfonts(const char *fontstr, double f
+@@ -1080,6 +1083,93 @@ xloadfonts(const char *fontstr, double f
  	FcPatternDestroy(pattern);
  }
  
@@ -122,7 +122,7 @@
  void
  xunloadfont(Font *f)
  {
-@@ -1172,6 +1262,9 @@ xinit(int cols, int rows)
+@@ -1189,6 +1279,9 @@ xinit(int cols, int rows)
  	usedfont = (opt_font == NULL)? font : opt_font;
  	xloadfonts(usedfont, 0);
  
@@ -131,4 +131,4 @@
 +
  	/* colors */
  	xw.cmap = XCreateColormap(xw.dpy, parent, xw.vis, None);
- 	xloadcols();
+ 	defaultalpha = alpha;
