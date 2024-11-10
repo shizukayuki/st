@@ -1,0 +1,21 @@
+--- st.orig/st.c
++++ st/st.c
+@@ -1825,8 +1825,6 @@ csihandle(void)
+ 	switch (csiescseq.mode[0]) {
+ 	default:
+ 	unknown:
+-		fprintf(stderr, "erresc: unknown csi ");
+-		csidump();
+ 		/* die(""); */
+ 		break;
+ 	case '@': /* ICH -- Insert <n> blank char */
+@@ -2199,9 +2197,6 @@ strhandle(void)
+ 	case '^': /* PM -- Privacy Message */
+ 		return;
+ 	}
+-
+-	fprintf(stderr, "erresc: unknown str ");
+-	strdump();
+ }
+ 
+ void
