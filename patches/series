@@ -8,4 +8,5 @@ dynamic-cursor-color.patch
 sparefont.patch
 anysize.patch
 ignore-erresc.patch
+disable-print.patch
 config.patch
