@@ -122,7 +122,7 @@
  void
  xunloadfont(Font *f)
  {
-@@ -1189,6 +1279,9 @@ xinit(int cols, int rows)
+@@ -1191,6 +1281,9 @@ xinit(int cols, int rows)
  	usedfont = (opt_font == NULL)? font : opt_font;
  	xloadfonts(usedfont, 0);
  

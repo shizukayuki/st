@@ -101,8 +101,8 @@
  	return 0;
  }
  
-@@ -1136,11 +1164,23 @@ xinit(int cols, int rows)
- 	Window parent;
+@@ -1136,11 +1164,25 @@ xinit(int cols, int rows)
+ 	Window parent, root;
  	pid_t thispid = getpid();
  	XColor xmousefg, xmousebg;
 +	XWindowAttributes attr;
@@ -113,20 +113,22 @@
  	xw.scr = XDefaultScreen(xw.dpy);
 -	xw.vis = XDefaultVisual(xw.dpy, xw.scr);
 +
-+	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0)))) {
-+		parent = XRootWindow(xw.dpy, xw.scr);
-+		xw.depth = 32;
++	root = XRootWindow(xw.dpy, xw.scr);
++	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0))))
++		parent = root;
++
++	if (XMatchVisualInfo(xw.dpy, xw.scr, 32, TrueColor, &vis) != 0) {
++		xw.vis = vis.visual;
++		xw.depth = vis.depth;
 +	} else {
 +		XGetWindowAttributes(xw.dpy, parent, &attr);
++		xw.vis = attr.visual;
 +		xw.depth = attr.depth;
 +	}
-+
-+	XMatchVisualInfo(xw.dpy, xw.scr, xw.depth, TrueColor, &vis);
-+	xw.vis = vis.visual;
  
  	/* font */
  	if (!FcInit())
-@@ -1150,7 +1190,8 @@ xinit(int cols, int rows)
+@@ -1150,7 +1192,8 @@ xinit(int cols, int rows)
  	xloadfonts(usedfont, 0);
  
  	/* colors */
@@ -136,30 +138,30 @@
  	xloadcols();
  
  	/* adjust fixed window geometry */
-@@ -1170,19 +1211,15 @@ xinit(int cols, int rows)
+@@ -1170,11 +1213,8 @@ xinit(int cols, int rows)
  		| ButtonMotionMask | ButtonPressMask | ButtonReleaseMask;
  	xw.attrs.colormap = xw.cmap;
  
+-	root = XRootWindow(xw.dpy, xw.scr);
 -	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0))))
--		parent = XRootWindow(xw.dpy, xw.scr);
- 	xw.win = XCreateWindow(xw.dpy, parent, xw.l, xw.t,
+-		parent = root;
+-	xw.win = XCreateWindow(xw.dpy, root, xw.l, xw.t,
 -			win.w, win.h, 0, XDefaultDepth(xw.dpy, xw.scr), InputOutput,
++	xw.win = XCreateWindow(xw.dpy, parent, xw.l, xw.t,
 +			win.w, win.h, 0, xw.depth, InputOutput,
  			xw.vis, CWBackPixel | CWBorderPixel | CWBitGravity
  			| CWEventMask | CWColormap, &xw.attrs);
- 
- 	memset(&gcvalues, 0, sizeof(gcvalues));
- 	gcvalues.graphics_exposures = False;
--	dc.gc = XCreateGC(xw.dpy, parent, GCGraphicsExposures,
--			&gcvalues);
--	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h,
+ 	if (parent != root)
+@@ -1185,7 +1225,7 @@ xinit(int cols, int rows)
+ 	dc.gc = XCreateGC(xw.dpy, xw.win, GCGraphicsExposures,
+ 			&gcvalues);
+ 	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h,
 -			DefaultDepth(xw.dpy, xw.scr));
-+	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h, xw.depth);
-+	dc.gc = XCreateGC(xw.dpy, xw.buf, GCGraphicsExposures, &gcvalues);
++			xw.depth);
  	XSetForeground(xw.dpy, dc.gc, dc.col[defaultbg].pixel);
  	XFillRectangle(xw.dpy, xw.buf, dc.gc, 0, 0, win.w, win.h);
  
-@@ -1386,7 +1423,7 @@ xdrawglyphfontspecs(const XftGlyphFontSp
+@@ -1389,7 +1429,7 @@ xdrawglyphfontspecs(const XftGlyphFontSp
  	int charlen = len * ((base.mode & ATTR_WIDE) ? 2 : 1);
  	int winx = borderpx + x * win.cw, winy = borderpx + y * win.ch,
  	    width = charlen * win.cw;
@@ -168,7 +170,7 @@
  	XRenderColor colfg, colbg;
  	XRectangle r;
  
-@@ -1460,10 +1497,30 @@ xdrawglyphfontspecs(const XftGlyphFontSp
+@@ -1463,10 +1503,30 @@ xdrawglyphfontspecs(const XftGlyphFontSp
  		fg = &revfg;
  	}
  
@@ -199,7 +201,7 @@
  	}
  
  	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)
-@@ -2060,6 +2117,10 @@ main(int argc, char *argv[])
+@@ -2063,6 +2123,10 @@ main(int argc, char *argv[])
  	case 'a':
  		allowaltscreen = 0;
  		break;

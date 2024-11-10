@@ -24,7 +24,7 @@
  static void xdrawglyph(Glyph, int, int);
  static void xclear(int, int, int, int);
  static int xgeommasktogravity(int);
-@@ -1381,7 +1381,7 @@ xmakeglyphfontspecs(XftGlyphFontSpec *sp
+@@ -1384,7 +1384,7 @@ xmakeglyphfontspecs(XftGlyphFontSpec *sp
  }
  
  void
@@ -33,7 +33,7 @@
  {
  	int charlen = len * ((base.mode & ATTR_WIDE) ? 2 : 1);
  	int winx = borderpx + x * win.cw, winy = borderpx + y * win.ch,
-@@ -1472,51 +1472,45 @@ xdrawglyphfontspecs(const XftGlyphFontSp
+@@ -1475,51 +1475,45 @@ xdrawglyphfontspecs(const XftGlyphFontSp
  	if (base.mode & ATTR_INVISIBLE)
  		fg = bg;
  
@@ -120,7 +120,7 @@
  }
  
  void
-@@ -1526,18 +1520,20 @@ xdrawglyph(Glyph g, int x, int y)
+@@ -1529,18 +1523,20 @@ xdrawglyph(Glyph g, int x, int y)
  	XftGlyphFontSpec spec;
  
  	numspecs = xmakeglyphfontspecs(&spec, &g, 1, x, y);
@@ -144,7 +144,7 @@
  
  	if (IS_SET(MODE_HIDE))
  		return;
-@@ -1667,32 +1663,39 @@ xstartdraw(void)
+@@ -1670,32 +1666,39 @@ xstartdraw(void)
  void
  xdrawline(Line line, int x1, int y1, int x2)
  {
