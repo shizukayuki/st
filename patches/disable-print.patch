@@ -12,7 +12,7 @@
  	{ TERMMOD,              XK_quotedbl,    incalpha,       {.f =  0} },
 --- st.orig/st.c
 +++ st/st.c
-@@ -1840,25 +1840,6 @@ csihandle(void)
+@@ -1850,25 +1850,6 @@ csihandle(void)
  		DEFAULT(csiescseq.arg[0], 1);
  		tmoveto(term.c.x, term.c.y+csiescseq.arg[0]);
  		break;
@@ -38,7 +38,7 @@
  	case 'c': /* DA -- Device Attributes */
  		if (csiescseq.arg[0] == 0)
  			ttywrite(vtiden, strlen(vtiden), 0);
-@@ -2597,9 +2578,6 @@ tputc(Rune u)
+@@ -2607,9 +2588,6 @@ tputc(Rune u)
  			width = 1;
  	}
  
