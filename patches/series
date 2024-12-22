@@ -7,6 +7,7 @@ alpha-background.patch
 dynamic-cursor-color.patch
 sparefont.patch
 anysize.patch
+swapmouse.patch
 ignore-erresc.patch
 disable-print.patch
 config.patch
