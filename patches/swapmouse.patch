@@ -21,7 +21,7 @@
  	XWindowAttributes attr;
  	XVisualInfo vis;
  
-@@ -1919,6 +1920,12 @@ xsetmode(int set, unsigned int flags)
+@@ -1920,6 +1921,12 @@ xsetmode(int set, unsigned int flags)
  {
  	int mode = win.mode;
  	MODBIT(win.mode, set, flags);
