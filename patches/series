@@ -11,4 +11,5 @@ swapmouse.patch
 bold-is-not-bright.patch
 ignore-erresc.patch
 disable-print.patch
+paste-controls.patch
 config.patch
