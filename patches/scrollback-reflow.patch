@@ -843,7 +843,7 @@
  }
  
  int32_t
-@@ -1538,7 +1706,7 @@ tsetscroll(int t, int b)
+@@ -1544,7 +1712,7 @@ tsetscroll(int t, int b)
  void
  tsetmode(int priv, int set, const int *args, int narg)
  {
@@ -852,7 +852,7 @@
  
  	for (lim = args + narg; args < lim; ++args) {
  		if (priv) {
-@@ -1599,25 +1767,18 @@ tsetmode(int priv, int set, const int *a
+@@ -1605,25 +1773,18 @@ tsetmode(int priv, int set, const int *a
  				xsetmode(set, MODE_8BIT);
  				break;
  			case 1049: /* swap screen & set/restore cursor as xterm */
@@ -886,7 +886,7 @@
  				tcursor((set) ? CURSOR_SAVE : CURSOR_LOAD);
  				break;
  			case 2004: /* 2004: bracketed paste mode */
-@@ -1669,7 +1830,7 @@ void
+@@ -1675,7 +1836,7 @@ void
  csihandle(void)
  {
  	char buf[40];
@@ -895,7 +895,7 @@
  
  	switch (csiescseq.mode[0]) {
  	default:
-@@ -1767,19 +1928,29 @@ csihandle(void)
+@@ -1773,19 +1934,29 @@ csihandle(void)
  	case 'J': /* ED -- Clear screen */
  		switch (csiescseq.arg[0]) {
  		case 0: /* below */
@@ -908,10 +908,9 @@
  			}
  			break;
  		case 1: /* above */
--			if (term.c.y > 1)
+ 			if (term.c.y > 0)
 -				tclearregion(0, 0, term.col-1, term.c.y-1);
 -			tclearregion(0, term.c.y, term.c.x, term.c.y);
-+			if (term.c.y >= 1)
 +				tclearregion(0, 0, term.col-1, term.c.y-1, 1);
 +			tclearregion(0, term.c.y, term.c.x, term.c.y, 1);
  			break;
@@ -932,7 +931,7 @@
  			break;
  		default:
  			goto unknown;
-@@ -1788,25 +1959,25 @@ csihandle(void)
+@@ -1794,25 +1965,25 @@ csihandle(void)
  	case 'K': /* EL -- Clear line */
  		switch (csiescseq.arg[0]) {
  		case 0: /* right */
@@ -964,7 +963,7 @@
  		break;
  	case 'L': /* IL -- Insert <n> blank lines */
  		DEFAULT(csiescseq.arg[0], 1);
-@@ -1820,9 +1991,11 @@ csihandle(void)
+@@ -1826,9 +1997,11 @@ csihandle(void)
  		tdeleteline(csiescseq.arg[0]);
  		break;
  	case 'X': /* ECH -- Erase <n> char */
@@ -978,7 +977,7 @@
  		break;
  	case 'P': /* DCH -- Delete <n> char */
  		DEFAULT(csiescseq.arg[0], 1);
-@@ -1848,9 +2021,9 @@ csihandle(void)
+@@ -1854,9 +2027,9 @@ csihandle(void)
  			ttywrite("\033[0n", sizeof("\033[0n") - 1, 0);
  			break;
  		case 6: /* Report Cursor Position (CPR) "<row>;<column>R" */
@@ -990,7 +989,7 @@
  			break;
  		default:
  			goto unknown;
-@@ -2148,16 +2321,8 @@ tdumpsel(void)
+@@ -2158,16 +2331,8 @@ tdumpsel(void)
  void
  tdumpline(int n)
  {
@@ -1009,7 +1008,7 @@
  }
  
  void
-@@ -2378,7 +2543,7 @@ eschandle(uchar ascii)
+@@ -2388,7 +2553,7 @@ eschandle(uchar ascii)
  		return 0;
  	case 'D': /* IND -- Linefeed */
  		if (term.c.y == term.bot) {
@@ -1018,7 +1017,7 @@
  		} else {
  			tmoveto(term.c.x, term.c.y+1);
  		}
-@@ -2391,7 +2556,7 @@ eschandle(uchar ascii)
+@@ -2401,7 +2566,7 @@ eschandle(uchar ascii)
  		break;
  	case 'M': /* RI -- Reverse index */
  		if (term.c.y == term.top) {
@@ -1027,7 +1026,7 @@
  		} else {
  			tmoveto(term.c.x, term.c.y-1);
  		}
-@@ -2535,7 +2700,8 @@ check_control_code:
+@@ -2545,7 +2710,8 @@ check_control_code:
  		 */
  		return;
  	}
@@ -1037,7 +1036,7 @@
  		selclear();
  
  	gp = &term.line[term.c.y][term.c.x];
-@@ -2575,6 +2741,7 @@ check_control_code:
+@@ -2585,6 +2751,7 @@ check_control_code:
  	if (term.c.x+width < term.col) {
  		tmoveto(term.c.x+width, term.c.y);
  	} else {
@@ -1045,7 +1044,7 @@
  		term.c.state |= CURSOR_WRAPNEXT;
  	}
  }
-@@ -2612,93 +2779,274 @@ twrite(const char *buf, int buflen, int
+@@ -2622,93 +2789,274 @@ twrite(const char *buf, int buflen, int
  }
  
  void

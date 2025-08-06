@@ -277,7 +277,7 @@
  }
  
  int32_t
-@@ -1736,11 +1802,11 @@ csihandle(void)
+@@ -1742,11 +1808,11 @@ csihandle(void)
  	case 'S': /* SU -- Scroll <n> line up */
  		if (csiescseq.priv) break;
  		DEFAULT(csiescseq.arg[0], 1);
@@ -291,7 +291,7 @@
  		break;
  	case 'L': /* IL -- Insert <n> blank lines */
  		DEFAULT(csiescseq.arg[0], 1);
-@@ -2312,7 +2378,7 @@ eschandle(uchar ascii)
+@@ -2322,7 +2388,7 @@ eschandle(uchar ascii)
  		return 0;
  	case 'D': /* IND -- Linefeed */
  		if (term.c.y == term.bot) {
@@ -300,7 +300,7 @@
  		} else {
  			tmoveto(term.c.x, term.c.y+1);
  		}
-@@ -2325,7 +2391,7 @@ eschandle(uchar ascii)
+@@ -2335,7 +2401,7 @@ eschandle(uchar ascii)
  		break;
  	case 'M': /* RI -- Reverse index */
  		if (term.c.y == term.top) {
@@ -309,7 +309,7 @@
  		} else {
  			tmoveto(term.c.x, term.c.y-1);
  		}
-@@ -2548,7 +2614,7 @@ twrite(const char *buf, int buflen, int
+@@ -2558,7 +2624,7 @@ twrite(const char *buf, int buflen, int
  void
  tresize(int col, int row)
  {
@@ -318,7 +318,7 @@
  	int minrow = MIN(row, term.row);
  	int mincol = MIN(col, term.col);
  	int *bp;
-@@ -2585,6 +2651,14 @@ tresize(int col, int row)
+@@ -2595,6 +2661,14 @@ tresize(int col, int row)
  	term.dirty = xrealloc(term.dirty, row * sizeof(*term.dirty));
  	term.tabs = xrealloc(term.tabs, col * sizeof(*term.tabs));
  
@@ -333,7 +333,7 @@
  	/* resize each row to new width, zero-pad if needed */
  	for (i = 0; i < minrow; i++) {
  		term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
-@@ -2643,7 +2717,7 @@ drawregion(int x1, int y1, int x2, int y
+@@ -2653,7 +2727,7 @@ drawregion(int x1, int y1, int x2, int y
  			continue;
  
  		term.dirty[y] = 0;
@@ -342,7 +342,7 @@
  	}
  }
  
-@@ -2664,8 +2738,9 @@ draw(void)
+@@ -2674,8 +2748,9 @@ draw(void)
  		cx--;
  
  	drawregion(0, 0, term.col, term.row);
