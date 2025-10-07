@@ -860,9 +860,8 @@
 -					break;
 -				tcursor((set) ? CURSOR_SAVE : CURSOR_LOAD);
 -				/* FALLTHROUGH */
- 			case 47: /* swap screen */
--			case 1047:
-+			case 1047: /* swap screen, clearing alternate screen */
+ 			case 47: /* swap screen buffer */
+ 			case 1047: /* swap screen buffer */
  				if (!allowaltscreen)
  					break;
 -				alt = IS_SET(MODE_ALTSCREEN);
@@ -880,9 +879,9 @@
 +				else
 +					tloaddefscreen(*args == 1047, *args == 1049);
 +				break;
- 			case 1048:
+ 			case 1048: /* save/restore cursor (like DECSC/DECRC) */
 +				if (!allowaltscreen)
-+						break;
++					break;
  				tcursor((set) ? CURSOR_SAVE : CURSOR_LOAD);
  				break;
  			case 2004: /* 2004: bracketed paste mode */
@@ -989,7 +988,7 @@
  			break;
  		default:
  			goto unknown;
-@@ -2158,16 +2331,8 @@ tdumpsel(void)
+@@ -2171,16 +2344,8 @@ tdumpsel(void)
  void
  tdumpline(int n)
  {
@@ -1008,7 +1007,7 @@
  }
  
  void
-@@ -2388,7 +2553,7 @@ eschandle(uchar ascii)
+@@ -2401,7 +2566,7 @@ eschandle(uchar ascii)
  		return 0;
  	case 'D': /* IND -- Linefeed */
  		if (term.c.y == term.bot) {
@@ -1017,7 +1016,7 @@
  		} else {
  			tmoveto(term.c.x, term.c.y+1);
  		}
-@@ -2401,7 +2566,7 @@ eschandle(uchar ascii)
+@@ -2414,7 +2579,7 @@ eschandle(uchar ascii)
  		break;
  	case 'M': /* RI -- Reverse index */
  		if (term.c.y == term.top) {
@@ -1026,7 +1025,7 @@
  		} else {
  			tmoveto(term.c.x, term.c.y-1);
  		}
-@@ -2545,7 +2710,8 @@ check_control_code:
+@@ -2558,7 +2723,8 @@ check_control_code:
  		 */
  		return;
  	}
@@ -1036,7 +1035,7 @@
  		selclear();
  
  	gp = &term.line[term.c.y][term.c.x];
-@@ -2585,6 +2751,7 @@ check_control_code:
+@@ -2598,6 +2764,7 @@ check_control_code:
  	if (term.c.x+width < term.col) {
  		tmoveto(term.c.x+width, term.c.y);
  	} else {
@@ -1044,7 +1043,7 @@
  		term.c.state |= CURSOR_WRAPNEXT;
  	}
  }
-@@ -2622,93 +2789,274 @@ twrite(const char *buf, int buflen, int
+@@ -2635,93 +2802,274 @@ twrite(const char *buf, int buflen, int
  }
  
  void
@@ -1169,13 +1168,13 @@
  		free(term.line[i]);
 -		free(term.alt[i]);
 +		term.line[i] = buf[ny];
- 	}
++	}
 +	/* fill lines in history buffer and update term.histf */
 +	for (/*i = -1 */; ny >= 0 && i >= -HISTSIZE; i--, ny--) {
 +		j = (term.histi + i + 1 + HISTSIZE) % HISTSIZE;
 +		free(term.hist[j]);
 +		term.hist[j] = buf[ny];
-+	}
+ 	}
 +	term.histf = -i - 1;
 +	term.scr = MIN(term.scr, term.histf);
 +	/* resize rest of the history lines */
@@ -1224,7 +1223,7 @@
 +		temp = term.line[i];
 +		term.line[i] = term.line[i-n];
 +		term.line[i-n] = temp;
-+	}
+ 	}
 +	for (/*i = n - 1 */; i >= 0; i--) {
 +		temp = term.line[i];
 +		term.line[i] = term.hist[term.histi];
@@ -1239,7 +1238,7 @@
 +		term.scr = 0;
 +		if (sel.ob.x != -1 && !sel.alt)
 +			selmove(-i);
- 	}
++	}
 +}
 +
 +void

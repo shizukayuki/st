@@ -208,7 +208,7 @@
  void
 --- st.orig/st.c
 +++ st/st.c
-@@ -3098,7 +3098,8 @@ draw(void)
+@@ -3111,7 +3111,8 @@ draw(void)
  	drawregion(0, 0, term.col, term.row);
  	if (term.scr == 0)
  		xdrawcursor(cx, term.c.y, term.line[term.c.y][cx],

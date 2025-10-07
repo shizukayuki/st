@@ -9,7 +9,7 @@
  		/* die(""); */
  		break;
  	case '@': /* ICH -- Insert <n> blank char */
-@@ -2219,9 +2217,6 @@ strhandle(void)
+@@ -2232,9 +2230,6 @@ strhandle(void)
  	case '^': /* PM -- Privacy Message */
  		return;
  	}
