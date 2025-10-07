@@ -49,7 +49,7 @@
 +	"#93a1a1",
 +	"#fdf6e3",
 +	"#839496", /* default foreground colour */
-+	"#1e1e2e", /* default background colour */
++	"#1c1c26", /* default background colour */
  };
  
  
