@@ -454,7 +454,7 @@
   */
 --- st.orig/st.c
 +++ st/st.c
-@@ -1218,6 +1218,9 @@ tsetchar(Rune u, const Glyph *attr, int
+@@ -1221,6 +1221,9 @@ tsetchar(Rune u, const Glyph *attr, int
  	term.dirty[y] = 1;
  	term.line[y][x] = *attr;
  	term.line[y][x].u = u;

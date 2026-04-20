@@ -1,6 +1,6 @@
 --- st.orig/st.c
 +++ st/st.c
-@@ -1841,8 +1841,6 @@ csihandle(void)
+@@ -1844,8 +1844,6 @@ csihandle(void)
  	switch (csiescseq.mode[0]) {
  	default:
  	unknown:
@@ -9,7 +9,7 @@
  		/* die(""); */
  		break;
  	case '@': /* ICH -- Insert <n> blank char */
-@@ -2232,9 +2230,6 @@ strhandle(void)
+@@ -2235,9 +2233,6 @@ strhandle(void)
  	case '^': /* PM -- Privacy Message */
  		return;
  	}
